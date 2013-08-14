@@ -4,11 +4,12 @@ import os
 import shutil
 import time
 import subprocess
+import tarfile
+import bz2
+
 
 newestFolder = 'newest'
 lastFolder = 'last'
-
-
 
 def file_md5(filePath):
     m = md5()
@@ -77,7 +78,7 @@ if __name__ == '__main__':
         exit(0)
     
     print u'变动文件:'
-    print changefiles
+    print '\n'.join(changefiles)
     #复制到目录
     logFolderName = time.strftime('%Y-%m-%d_%H-%M-%S')
     os.mkdir(logFolderName)
@@ -88,5 +89,11 @@ if __name__ == '__main__':
     #svn log
     saveSVNInfo(logFolderName)
 
-    
+    #tar
+    print "压缩文件"
+    archive = tarfile.open('%s.tar.bz2'%logFolderName,'w:bz2')
+    archive.debug = 1           
+    archive.add(logFolderName) 
+    archive.close()
+
     
